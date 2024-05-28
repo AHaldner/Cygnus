@@ -1,0 +1,27 @@
+@page "/packages"
+@using Cygnus.Utils
+
+<PageTitle>Packages Overview</PageTitle>
+
+<h1>All Packages</h1>
+<ul>
+    @foreach (var packageType in packageTypes)
+    {
+        <li>@packageType</li>
+    }
+</ul>
+
+@code {
+    private List<string> packageTypes = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() =>
+        {
+            for (var packageId = 1; packageId <= 3; packageId++)
+            {
+                packageTypes.Add(PackageUtils.GetPackageType(packageId));
+            }
+        });
+    }
+}
