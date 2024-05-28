@@ -1,0 +1,21 @@
+@page "/packages/{packageID:int}"
+@using Cygnus.Utils
+
+<PageTitle>Package: @PackageType</PageTitle>
+
+<h1>@PackageType</h1>
+
+
+@code {
+    [Parameter]
+    public int PackageID { get; set; }
+    public string PackageType { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() =>
+        {
+            PackageType = PackageUtils.GetPackageType(PackageID);
+        });
+    }
+}
