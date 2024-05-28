@@ -5,7 +5,9 @@ namespace Cygnus.Utils
 {
     public static class FetchDatabase
     {
-        public static async Task<List<string>> FetchData(string tableName)
+        private static readonly string connectionString;
+
+        static FetchDatabase()
         {
             Env.Load();
 
@@ -15,18 +17,55 @@ namespace Cygnus.Utils
             var port = Environment.GetEnvironmentVariable("DB_PORT");
             var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
-            var connectionString =
-            $"server={server};user={user};database={database};port={port};password={password}";
-            using var connection = new MySqlConnection(connectionString);
-            await connection.OpenAsync();
+            connectionString = $"server={server};user={user};database={database};port={port};password={password}";
+        }
 
-            using var command = new MySqlCommand($"SELECT * FROM {tableName}", connection);
-            using var reader = await command.ExecuteReaderAsync();
-
+        public static async Task<List<string>> FetchDataAsync(string tableName)
+        {
             var data = new List<string>();
-            while (await reader.ReadAsync())
+
+            try
             {
-                data.Add(reader.GetString(3));
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                using var command = new MySqlCommand($"SELECT * FROM `{tableName}`", connection);
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    data.Add(reader.GetString(3));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error fetching data: {ex.Message}");
+            }
+
+            return data;
+        }
+
+        public static async Task<List<string>> FetchSpecificDataAsync(string tableName, int packageID)
+        {
+            var data = new List<string>();
+
+            try
+            {
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                using var command = new MySqlCommand($"SELECT * FROM `{tableName}` WHERE packageID = @packageID", connection);
+                command.Parameters.AddWithValue("@packageID", packageID);
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    data.Add(reader.GetString(0));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error fetching specific data: {ex.Message}");
             }
 
             return data;

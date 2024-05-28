@@ -25,6 +25,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        data = await FetchDatabase.FetchData("updates");
+        data = await FetchDatabase.FetchDataAsync("updates");
     }
 }
