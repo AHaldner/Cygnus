@@ -1,0 +1,8 @@
+# .gitignore
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+.env
+.DS_Store
