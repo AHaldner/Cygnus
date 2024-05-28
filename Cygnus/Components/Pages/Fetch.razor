@@ -1,9 +1,6 @@
 @page "/fetch"
 @attribute [StreamRendering]
-@using MySql.Data.MySqlClient
-@using System.Data
-@using DotNetEnv
-
+@using Cygnus.Utils
 
 <PageTitle>Fetch</PageTitle>
 
@@ -28,31 +25,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await FetchData();
-    }
-
-    private async Task FetchData()
-    {
-        DotNetEnv.Env.Load();
-
-        var server = Environment.GetEnvironmentVariable("DB_SERVER");
-        var user = Environment.GetEnvironmentVariable("DB_USER");
-        var database = Environment.GetEnvironmentVariable("DB_NAME");
-        var port = Environment.GetEnvironmentVariable("DB_PORT");
-        var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
-
-        var connectionString =
-        $"server={server};user={user};database={database};port={port};password={password}";
-        using var connection = new MySqlConnection(connectionString);
-        await connection.OpenAsync();
-
-        using var command = new MySqlCommand("SELECT * FROM updates", connection);
-        using var reader = await command.ExecuteReaderAsync();
-
-        data = new List<string>();
-        while (await reader.ReadAsync())
-        {
-            data.Add(reader.GetString(3));
-        }
+        data = await FetchDatabase.FetchData("updates");
     }
 }
