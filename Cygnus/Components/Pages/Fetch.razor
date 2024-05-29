@@ -1,6 +1,5 @@
 @page "/fetch"
 @attribute [StreamRendering]
-@using Cygnus.Utils
 
 <PageTitle>Fetch</PageTitle>
 
@@ -19,6 +18,8 @@ else
         }
     </ul>
 }
+
+<Button @rendermode="InteractiveServer" />
 
 @code {
     private List<string>? data;
