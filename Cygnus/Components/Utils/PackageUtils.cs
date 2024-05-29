@@ -6,8 +6,9 @@ namespace Cygnus.Utils
         {
             return packageID switch
             {
-                1 => "Basic",
-                2 => "Advanced",
+                0 => "Andromeda",
+                1 => "Hydra",
+                2 => "Static",
                 _ => "Undefined"
             };
         }
