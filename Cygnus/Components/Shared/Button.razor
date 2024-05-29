@@ -1,0 +1,12 @@
+﻿<a class="btn btn-primary" @onclick="RefreshResults">@ButtonText</a>
+
+@code {
+    string ButtonText { get; set; } = "Refresh Results";
+
+    async Task RefreshResults()
+    {
+        ButtonText = "Loading...";
+        await Task.Delay(500); // Simulate a long-running operation
+        ButtonText = "Refresh Results";
+    }
+}
