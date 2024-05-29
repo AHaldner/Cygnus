@@ -20,9 +20,9 @@ namespace Cygnus.Utils
             connectionString = $"server={server};user={user};database={database};port={port};password={password}";
         }
 
-        public static async Task<List<string>> FetchDataAsync(string tableName)
+        public static async Task<List<string[]>> FetchDataAsync(string tableName)
         {
-            var data = new List<string>();
+            var data = new List<string[]>();
 
             try
             {
@@ -34,7 +34,14 @@ namespace Cygnus.Utils
 
                 while (await reader.ReadAsync())
                 {
-                    data.Add(reader.GetString(3));
+                    var contents = new string[3]
+                    {
+                        reader.GetString(1),
+                        reader.GetDateTime(2).ToString("dd.MM.yyyy HH:mm:ss"),
+                        reader.GetString(3)
+                    };
+
+                    data.Add(contents);
                 }
             }
             catch (Exception ex)

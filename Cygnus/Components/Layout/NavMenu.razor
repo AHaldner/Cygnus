@@ -28,7 +28,7 @@
                 @for (var packageId = 1; packageId <= 3; packageId++)
                 {
                     var packageType = Cygnus.Utils.PackageUtils.GetPackageType(packageId);
-                    <NavLink class="nav-link" href="@($"packages/{packageId}")">
+                    <NavLink class="nav-link ms-3 my-1" href="@($"packages/{packageId}")">
                         @packageType
                     </NavLink>
                 }
