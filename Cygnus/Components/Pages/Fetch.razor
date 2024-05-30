@@ -24,7 +24,7 @@ else
             <tr>
                 <td>@item[1]</td>
                 <td>@item[2]</td>
-                <td class="@GetCssClass(item[0])">@CapitalizeFirstLetter(item[0])</td>
+                <td class="@GetCssClass(item[0])">@GlobalUtils.CapitalizeFirstLetter(item[0])</td>
             </tr>
         }
 
@@ -48,14 +48,4 @@ else
         "failure" => "text-danger",
         _ => ""
     };
-
-    private string CapitalizeFirstLetter(string input)
-    {
-        if (string.IsNullOrEmpty(input))
-        {
-            return input;
-        }
-
-        return char.ToUpper(input[0]) + input.Substring(1);
-    }
 }

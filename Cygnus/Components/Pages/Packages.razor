@@ -10,7 +10,21 @@
 }
 else
 {
-    <table class="table">
+    var groupedData = sortedData?.GroupBy(item => item[6]);
+
+    if (groupedData == null)
+    {
+        return;
+    }
+
+    foreach (var group in groupedData)
+    {
+        if (PackageID == 0)
+        {
+            <h2>@GlobalUtils.CapitalizeFirstLetter(@group.Key)</h2>
+
+        }
+        <table class="table">
     <thead>
         <tr>
             <th>Timestamp</th>
@@ -20,32 +34,39 @@ else
             <th>Development Status</th>
         </tr>
     </thead>
-    @foreach (var item in data)
-        {
-            <tr>
-                <td>@item[3]</td>
-                <td>@item[0]</td>
-                <td class="@CheckStatus(@item[1])">@item[1]</td>
-                <td>@PackageUtils.FormatSize(@item[2])</td>
-                <td>@item[5]</td>
-                <td>@item[6]</td>
-            </tr>
-        }
-    </table>
+    <tbody>
+        @foreach (var item in group)
+                {
+                    <tr>
+                        <td>@item[3]</td>
+                        <td>@item[0]</td>
+                        <td class="@CheckStatus(@item[1])">@item[1]</td>
+                        <td>@PackageUtils.FormatSize(@item[2])</td>
+                        <td>@item[5]</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
-
 
 @code {
     [Parameter]
     public int PackageID { get; set; }
     public string PackageType { get; set; } = string.Empty;
-
     private List<string[]>? data;
+    private List<string[]>? sortedData;
 
     protected override async Task OnInitializedAsync()
     {
         PackageType = PackageUtils.GetPackageType(PackageID);
         data = await FetchDatabase.FetchSpecificDataAsync("subdomains_cache", PackageID);
+
+        // Sort data by package type and then by website
+        sortedData = data
+        .OrderBy(item => item[6], new CustomComparer())
+        .ThenBy(item => item[0])
+        .ToList();
     }
 
     private string CheckStatus(string status) => status switch
@@ -53,4 +74,22 @@ else
         "OK" => "text-success",
         _ => "text-danger"
     };
+
+    public class CustomComparer : IComparer<string>
+    {
+        public int Compare(string? x, string? y)
+        {
+            var order = new List<string> { "basic", "pro", "internal" };
+
+            int indexX = order.IndexOf(x ?? string.Empty);
+            int indexY = order.IndexOf(y ?? string.Empty);
+
+            if (indexX == -1 || indexY == -1)
+            {
+                return string.Compare(x, y);
+            }
+
+            return indexX.CompareTo(indexY);
+        }
+    }
 }
