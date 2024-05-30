@@ -4,17 +4,53 @@
 
 <h1>@PackageType</h1>
 
+@if (data == null)
+{
+    <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Website</th>
+            <th>Status</th>
+            <th>Size</th>
+            <th>Development Status</th>
+        </tr>
+    </thead>
+    @foreach (var item in data)
+        {
+            <tr>
+                <td>@item[3]</td>
+                <td>@item[0]</td>
+                <td class="@CheckStatus(@item[1])">@item[1]</td>
+                <td>@PackageUtils.FormatSize(@item[2])</td>
+                <td>@item[5]</td>
+                <td>@item[6]</td>
+            </tr>
+        }
+    </table>
+}
+
 
 @code {
     [Parameter]
     public int PackageID { get; set; }
     public string PackageType { get; set; } = string.Empty;
 
+    private List<string[]>? data;
+
     protected override async Task OnInitializedAsync()
     {
-        await Task.Run(() =>
-        {
-            PackageType = PackageUtils.GetPackageType(PackageID);
-        });
+        PackageType = PackageUtils.GetPackageType(PackageID);
+        data = await FetchDatabase.FetchSpecificDataAsync("subdomains_cache", PackageID);
     }
+
+    private string CheckStatus(string status) => status switch
+    {
+        "OK" => "text-success",
+        _ => "text-danger"
+    };
 }

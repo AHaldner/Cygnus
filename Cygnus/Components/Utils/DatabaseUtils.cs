@@ -52,22 +52,33 @@ namespace Cygnus.Utils
             return data;
         }
 
-        public static async Task<List<string>> FetchSpecificDataAsync(string tableName, int packageID)
+        public static async Task<List<string[]>> FetchSpecificDataAsync(string tableName, int packageID)
         {
-            var data = new List<string>();
+            var data = new List<string[]>();
 
             try
             {
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
 
-                using var command = new MySqlCommand($"SELECT * FROM `{tableName}` WHERE packageID = @packageID", connection);
+                using var command = new MySqlCommand($"SELECT * FROM `{tableName}` WHERE category = @packageID ORDER BY `{tableName}`.`subdomain_name` ASC", connection);
                 command.Parameters.AddWithValue("@packageID", packageID);
                 using var reader = await command.ExecuteReaderAsync();
 
                 while (await reader.ReadAsync())
                 {
-                    data.Add(reader.GetString(0));
+                    var contents = new string[7]
+                    {
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetInt64(3).ToString(),
+                        reader.GetDateTime(4).ToString("dd.MM.yyyy HH:mm:ss"),
+                        reader.GetInt16(5).ToString(),
+                        reader.GetString(6),
+                        reader.GetString(7)
+                    };
+
+                    data.Add(contents);
                 }
             }
             catch (Exception ex)

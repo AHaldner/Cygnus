@@ -12,5 +12,20 @@ namespace Cygnus.Utils
                 _ => "Undefined"
             };
         }
+
+        public static string FormatSize(string sizeInBytes)
+        {
+            string[] sizes = ["B", "KB", "MB", "GB", "TB"];
+            int i = 0;
+            double size = double.Parse(sizeInBytes);
+
+            while (size >= 1024 && i < sizes.Length - 1)
+            {
+                size /= 1024;
+                i++;
+            }
+
+            return $"{size:0.##} {sizes[i]}";
+        }
     }
 }
