@@ -1,4 +1,5 @@
 @page "/packages/{packageID:int}"
+@attribute [StreamRendering]
 
 <PageTitle>Package: @PackageType</PageTitle>
 
@@ -40,9 +41,9 @@ else
                     <tr>
                         <td>@item[3]</td>
                         <td>@item[0]</td>
-                        <td class="@CheckStatus(@item[1])">@item[1]</td>
+                        <td class="@GlobalUtils.AssignColor(@item[1])">@item[1]</td>
                         <td>@PackageUtils.FormatSize(@item[2])</td>
-                        <td>@item[5]</td>
+                        <td>@GlobalUtils.CapitalizeFirstLetter(@item[5])</td>
                     </tr>
                 }
             </tbody>
@@ -62,18 +63,13 @@ else
         PackageType = PackageUtils.GetPackageType(PackageID);
         data = await FetchDatabase.FetchSpecificDataAsync("subdomains_cache", PackageID);
 
+
         // Sort data by package type and then by website
         sortedData = data
         .OrderBy(item => item[6], new CustomComparer())
         .ThenBy(item => item[0])
         .ToList();
     }
-
-    private string CheckStatus(string status) => status switch
-    {
-        "OK" => "text-success",
-        _ => "text-danger"
-    };
 
     public class CustomComparer : IComparer<string>
     {

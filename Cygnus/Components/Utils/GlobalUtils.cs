@@ -9,7 +9,17 @@ namespace Cygnus.Utils
                 return input;
             }
 
-            return char.ToUpper(input[0]) + input.Substring(1);
+            return char.ToUpper(input[0]) + input[1..];
+        }
+
+        public static string AssignColor(string input)
+        {
+            return input switch
+            {
+                "OK" => "text-success",
+                "success" => "text-success",
+                _ => "text-danger"
+            };
         }
     }
 }

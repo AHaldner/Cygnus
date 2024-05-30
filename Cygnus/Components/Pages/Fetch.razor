@@ -24,7 +24,7 @@ else
             <tr>
                 <td>@item[1]</td>
                 <td>@item[2]</td>
-                <td class="@GetCssClass(item[0])">@GlobalUtils.CapitalizeFirstLetter(item[0])</td>
+                <td class="@GlobalUtils.AssignColor(item[0])">@GlobalUtils.CapitalizeFirstLetter(item[0])</td>
             </tr>
         }
 
@@ -41,11 +41,4 @@ else
     {
         data = await FetchDatabase.FetchDataAsync("updates");
     }
-
-    private string GetCssClass(string status) => status switch
-    {
-        "success" => "text-success",
-        "failure" => "text-danger",
-        _ => ""
-    };
 }
