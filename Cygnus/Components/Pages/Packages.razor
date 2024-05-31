@@ -40,10 +40,10 @@ else
                 {
                     <tr>
                         <td>@item[3]</td>
-                        <td>@item[0]</td>
+                        <td><a href="https://@item[0]" target="_blank" rel="noopener noreferrer">@item[0]</a></td>
                         <td class="@GlobalUtils.AssignColor(@item[1])">@item[1]</td>
                         <td>@PackageUtils.FormatSize(@item[2])</td>
-                        <td>@GlobalUtils.CapitalizeFirstLetter(@item[5])</td>
+                        <td class="@GlobalUtils.AssignStatusColor(@item[5])">@GlobalUtils.CapitalizeFirstLetter(@item[5])</td>
                     </tr>
                 }
             </tbody>
